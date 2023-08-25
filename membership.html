@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Membership Fees Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: left;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        select {
+            width: 50%;
+            padding: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 10px;
+        }
+
+        #calculate-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Membership Fees Calculator</h1>
+
+        <label for="monthly-fee">Monthly Membership Fees (Paid to TI)</label>
+        <select id="monthly-fee">
+            <option value="10.00" selected> $10.00 </option>
+            <option value="7.50"> $7.50 </option>
+        </select>
+
+        <label for="monthly-club-fee">Monthly Club Fee (Paid to Club)</label>
+        <select id="monthly-club-fee">
+           
+            <option value="0"> $0.00 </option>
+            <option value="2.00"> $1.00 </option>
+            <option value="2.00"> $1.50 </option>
+            <option value="2.00" selected> $2.00 </option>
+            <option value="2.00"> $2.50 </option>
+        </select>
+        <label for="new-member-fee">New Member One Time Charge(Paid to TI)</label>
+        <select id="new-member-fee">
+           
+            <option value="20.00"> $20.00 </option>
+            
+        </select>
+        <p></p> 
+        <p></p>
+        <label>Seperate Existing Member vs. New Member</label>
+        <table>
+            <thead>
+                <tr>
+                    <th>Month to Join</th>
+                    <th>Months to Pay (Two Periods per Year)</th>
+                    <th>Membership Fees Total (to TI)</th>
+                    <th>Club Fees Total (to Club)</th>
+                    <th>Member Renewing Fee</th>
+                    <th>Initiation Fee</th>
+                    <th>New Member Fee</th>
+                </tr>
+            </thead>
+            <tbody id="fee-table-body">
+                <!-- This is where the calculated rows will go -->
+            </tbody>
+        </table>
+
+        <button id="calculate-button">Check Out!</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const monthlyFeeSelect = document.getElementById("monthly-fee");
+            const monthlyClubFeeSelect = document.getElementById("monthly-club-fee");
+            const feeTableBody = document.getElementById("fee-table-body");
+
+            // Function to calculate fees and update the table
+            function calculateFees() {
+                feeTableBody.innerHTML = ""; // Clear the table body
+
+                const monthlyFee = parseFloat(monthlyFeeSelect.value);
+                const monthlyClubFee = parseFloat(monthlyClubFeeSelect.value);
+
+                const monthsInOrder = [6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1]; 
+
+                for (let i = 0; i < 12; i++) {
+                    //const monthsToPay = (i % 6) + 1;
+                    const monthsToPay = monthsInOrder[i];
+                    const membershipFeesTotal = (monthlyFee * monthsToPay).toFixed(2);
+                    const clubFeesTotal = (monthlyClubFee * monthsToPay).toFixed(2);
+                    const renewingMemberFee = (parseFloat(membershipFeesTotal) + parseFloat(clubFeesTotal)).toFixed(2);
+                    const initiationFee = "20.00";
+                    const newMemberFee = (parseFloat(initiationFee) + parseFloat(renewingMemberFee)).toFixed(2);
+
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${getMonthName(i)}</td>
+                        <td>${monthsToPay}</td>
+                        <td>$${membershipFeesTotal}</td>
+                        <td>$${clubFeesTotal}</td>
+                        <td>$${renewingMemberFee}</td>
+                        <td>$${initiationFee}</td>
+                        <td>$${newMemberFee}</td>
+                    `;
+                    feeTableBody.appendChild(row);
+                }
+            }
+
+            // Helper function to get month name from index
+            function getMonthName(index) {
+                const months = [
+                    "Oct.", "Nov.", "Dec.", "Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sept."
+                ];
+                return months[index];
+            }
+
+            // Add event listener to calculate fees on button click
+            document.getElementById("calculate-button").addEventListener("click", calculateFees);
+
+            // Initial calculation
+            calculateFees();
+        });
+    </script>
+</body>
+</html>
